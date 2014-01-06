@@ -24,7 +24,7 @@ import Graphics.HGL.Win32.WND (handleEvents, beginGraphics, endGraphics)
 import Graphics.HGL.Internals.Utilities (safeTry)
 import Control.Concurrent (forkIO, yield)
 import Data.IORef( newIORef, readIORef, writeIORef )
-import System.IO.Error (try)
+import Control.Exception(try,SomeException)
 #endif
 
 ----------------------------------------------------------------
@@ -60,7 +60,7 @@ runGraphics m = do
   beginGraphics
   quit <- newIORef False
   safeTry $ do
-    forkIO (try m >> writeIORef quit True)
+    forkIO ( (try m :: IO (Either SomeException ())) >> writeIORef quit True)
     yield
     handleEvents (readIORef quit)
   endGraphics

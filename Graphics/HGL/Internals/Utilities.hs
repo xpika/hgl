@@ -20,7 +20,7 @@ module Graphics.HGL.Internals.Utilities(
         modMVar, modMVar_
 	) where
 
-import qualified Control.Exception as E (bracket, try, IOException, tryJust, ioErrors)
+import qualified Control.Exception as E (bracket, try, IOException, tryJust)
 import Control.Concurrent( MVar, takeMVar, putMVar )
 
 bracket :: IO a -> (a -> IO b) -> (a -> IO c) -> IO c
@@ -33,13 +33,8 @@ bracket_ left right m = bracket left right (const m)
 type Exception = E.IOException
 safeTry :: IO a -> IO (Either Exception a)
 
-#if __GLASGOW_HASKELL >= 610 
--- ghc-6.10
+
 safeTry = E.try
-#else
--- ghc 6.8 (and below?)
-safeTry = E.tryJust E.ioErrors
-#endif
 
 
 ----------------------------------------------------------------
