@@ -14,12 +14,20 @@ import Control.Concurrent.MVar (MVar, newMVar, readMVar, takeMVar, putMVar)
 import Control.Monad (when)
 import Data.Maybe (isJust)
 import System.Environment (getEnv)
+<<<<<<< HEAD
 import System.IO.Error (try)
+=======
+import System.IO.Error (tryIOError,catchIOError)
+>>>>>>> danr/master
 import System.IO.Unsafe (unsafePerformIO)
 
 getDisplayName :: IO String
 getDisplayName = do
+<<<<<<< HEAD
   disp <- try (getEnv "DISPLAY")
+=======
+  disp <- tryIOError (getEnv "DISPLAY")
+>>>>>>> danr/master
   return (either (const ":0.0") id disp)
 
 displayRef :: MVar (Maybe X.Display)
@@ -31,8 +39,13 @@ openDisplay host cleanup = do
   when (isJust mb_display) cleanup
   openDisplay'
  where
+<<<<<<< HEAD
   openDisplay' = do      
     display <- X.openDisplay host `catch` \ err -> 
+=======
+  openDisplay' = do
+    display <- X.openDisplay host `catchIOError` \ err ->
+>>>>>>> danr/master
                  ioError (userError ("Unable to open X display " ++ host))
     modMVar displayRef (const $ Just display)
     return display

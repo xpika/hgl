@@ -27,6 +27,11 @@ import Graphics.HGL.Internals.Types
 
 import qualified Graphics.X11.Xlib as X
 
+<<<<<<< HEAD
+=======
+import System.IO.Error (catchIOError)
+
+>>>>>>> danr/master
 import Control.Concurrent.MVar (MVar)
 import Data.Bits
 import Data.Word (Word8)
@@ -84,10 +89,17 @@ lookupColor display col = (do
   (X.Color p _ _ _ _) <-
       X.allocColor display color_map (X.Color 0 r g b xcolor_flags)
   return p)
+<<<<<<< HEAD
      `catch` \ err -> 
                print err >> return 0
 --	       ioError (userError ("Error: " ++ show err
 --			      ++ "\nUnable to allocate colo[u]r " ++ show (r,g,b) 
+=======
+     `catchIOError` \ err ->
+               print err >> return 0
+--	       ioError (userError ("Error: " ++ show err
+--			      ++ "\nUnable to allocate colo[u]r " ++ show (r,g,b)
+>>>>>>> danr/master
 --			      ++ " - I'll bet you're running Netscape."))
  where
   screen    = X.defaultScreenOfDisplay display
