@@ -1,5 +1,5 @@
 name:		HGL
-version:	3.2.0.4
+version:	3.2.0.5
 license:	BSD3
 license-file:	LICENSE
 author: 	Alastair Reid
@@ -22,7 +22,7 @@ flag split-base
 
 library
   if flag(split-base)
-    build-depends: base >= 3 && < 5, array
+    build-depends: base >= 4.4.0.0 && < 5, array
   else
     build-depends: base < 2
   exposed-modules:
