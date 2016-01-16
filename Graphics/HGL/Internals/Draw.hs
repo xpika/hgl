@@ -31,7 +31,7 @@ import Graphics.HGL.X11.Types(DC)
 import Graphics.HGL.Win32.Types(DC)
 #endif
 import qualified Graphics.HGL.Internals.Utilities as Utils (bracket, bracket_)
-import Control.Monad (liftM)
+import Control.Monad (liftM, ap)
 
 ----------------------------------------------------------------
 -- Graphics
@@ -42,6 +42,10 @@ type Graphic = Draw ()
 
 -- | Monad for sequential construction of images.
 newtype Draw a = MkDraw (DC -> IO a)
+
+instance Applicative Draw where
+  pure  = return
+  (<*>) = ap
 
 unDraw :: Draw a -> (DC -> IO a)
 unDraw (MkDraw m) = m
