@@ -32,6 +32,7 @@ import Graphics.HGL.Win32.Types(DC)
 #endif
 import qualified Graphics.HGL.Internals.Utilities as Utils (bracket, bracket_)
 import Control.Monad (liftM, ap)
+import Control.Applicative
 
 ----------------------------------------------------------------
 -- Graphics
@@ -74,7 +75,7 @@ bracket
   -> (a -> Draw c)	-- ^ the drawing action inside the bracket.
   -> Draw c
 bracket left right m = MkDraw (\ hdc ->
-  Utils.bracket (unDraw left hdc) 
+  Utils.bracket (unDraw left hdc)
                 (\ a -> unDraw (right a) hdc)
                 (\ a -> unDraw (m a) hdc))
 
@@ -88,7 +89,7 @@ bracket_
   -> Draw c		-- ^ the drawing action inside the bracket.
   -> Draw c
 bracket_ left right m = MkDraw (\ hdc ->
-  Utils.bracket_ (unDraw left hdc) 
+  Utils.bracket_ (unDraw left hdc)
                  (\ a -> unDraw (right a) hdc)
                  (unDraw m hdc))
 
