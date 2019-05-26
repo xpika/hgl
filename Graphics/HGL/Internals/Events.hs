@@ -18,9 +18,11 @@ module Graphics.HGL.Internals.Events(
         getTick, sendTick
 	) where
 
+import Control.Concurrent.STM (atomically)
+import Control.Concurrent.STM.TChan(TChan, newTChanIO, readTChan, writeTChan, isEmptyTChan)
+
 import Graphics.HGL.Internals.Event
 import Graphics.HGL.Internals.Flag
-import Control.Concurrent.Chan(Chan, newChan, readChan, writeChan, isEmptyChan)
 
 ----------------------------------------------------------------
 -- Interface
@@ -36,6 +38,8 @@ import Control.Concurrent.Chan(Chan, newChan, readChan, writeChan, isEmptyChan)
 -- myself reimplementing this in Haskell (even in the Win32 version
 -- of the Graphics library).  Exposure events in X11 behave in a
 -- similar way except that they do not overtake other events.)
+
+type Chan = TChan
 
 data Events = Events { events :: Chan Event
                      , tick   :: Flag ()
@@ -62,6 +66,25 @@ isNoEvent evs = isEmptyChan (events evs)
 sendEvent evs = writeChan   (events evs)
 sendTick  evs = setFlag     (tick evs) ()
 getTick   evs = resetFlag   (tick evs)
+
+----------------------------------------------------------------
+-- TChan wrappers
+--
+-- As `isEmptyChan` was removed by
+-- http://hackage.haskell.org/trac/ghc/ticket/4154, we can follow
+-- suggestions in there and just replace Chan with TChan.
+----------------------------------------------------------------
+newChan :: IO (Chan a)
+newChan = newTChanIO
+
+readChan :: Chan a -> IO a
+readChan = atomically . readTChan
+
+writeChan :: Chan a -> a -> IO ()
+writeChan c v = atomically $ writeTChan c v
+
+isEmptyChan :: Chan a -> IO Bool
+isEmptyChan = atomically . isEmptyTChan
 
 ----------------------------------------------------------------
 -- End
