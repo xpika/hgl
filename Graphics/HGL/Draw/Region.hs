@@ -143,8 +143,9 @@ combine op (MkRegion r1) (MkRegion r2) = unsafePerformIO $ do
   return (MkRegion r)
 
 regionToGraphic (MkRegion r) = mkDraw $ \ dc -> do
+  (_, _, _, width, height, _, _) <- X.getGeometry (disp dc) (drawable dc)
   X.setRegion (disp dc) (brushGC dc) r
-  X.fillRectangle (disp dc) (drawable dc) (brushGC dc) 0 0 (-1) (-1)  -- entire window (in 2s complement!)
+  X.fillRectangle (disp dc) (drawable dc) (brushGC dc) 0 0 width height
   X.setRegion (disp dc) (brushGC dc) emptyXRegion
   return ()
 
